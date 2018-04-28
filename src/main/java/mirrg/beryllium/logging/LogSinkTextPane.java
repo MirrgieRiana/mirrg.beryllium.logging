@@ -11,14 +11,26 @@ import java.util.function.Consumer;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.SizeRequirements;
 import javax.swing.SwingUtilities;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.BoxView;
+import javax.swing.text.ComponentView;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.EditorKit;
+import javax.swing.text.Element;
+import javax.swing.text.IconView;
+import javax.swing.text.LabelView;
+import javax.swing.text.ParagraphView;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
+import javax.swing.text.StyledEditorKit;
+import javax.swing.text.View;
+import javax.swing.text.ViewFactory;
 
 /**
  * Swingコンポーネントとして出力するロガーです。
@@ -126,18 +138,54 @@ public class LogSinkTextPane extends LogSink
 			}
 		}
 
-		//
-
-		public boolean noLineWrap = true;
+		// 自動改行禁止
 
 		@Override
-		public boolean getScrollableTracksViewportWidth()
+		protected EditorKit createDefaultEditorKit()
 		{
-			if (noLineWrap) {
-				return false;
-			} else {
-				return super.getScrollableTracksViewportWidth();
-			}
+			return new StyledEditorKit() {
+				@Override
+				public ViewFactory getViewFactory()
+				{
+					return new ViewFactory() {
+						@Override
+						public View create(Element elem)
+						{
+							String kind = elem.getName();
+							if (kind != null) {
+								if (kind.equals(AbstractDocument.ContentElementName)) {
+									return new LabelView(elem);
+								} else if (kind.equals(AbstractDocument.ParagraphElementName)) {
+									return new ParagraphView(elem) {
+										@Override
+										protected SizeRequirements calculateMinorAxisRequirements(int axis, SizeRequirements r)
+										{
+											SizeRequirements req = super.calculateMinorAxisRequirements(axis, r);
+											req.minimum = req.preferred;
+											return req;
+										}
+
+										@Override
+										public int getFlowSpan(int index)
+										{
+											return Integer.MAX_VALUE;
+										}
+									};
+								} else if (kind.equals(AbstractDocument.SectionElementName)) {
+									return new BoxView(elem, View.Y_AXIS);
+								} else if (kind.equals(StyleConstants.ComponentElementName)) {
+									return new ComponentView(elem);
+								} else if (kind.equals(StyleConstants.IconElementName)) {
+									return new IconView(elem);
+								}
+							}
+
+							// default to text display
+							return new LabelView(elem);
+						}
+					};
+				}
+			};
 		}
 
 		//
