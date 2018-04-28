@@ -1,6 +1,7 @@
 package mirrg.beryllium.logging;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
@@ -8,7 +9,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.swing.JTextPane;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
+import javax.swing.plaf.TextUI;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
@@ -16,6 +19,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 
 /**
  * Swingコンポーネントとして出力するロガーです。
@@ -37,7 +41,7 @@ public class LogSinkTextPane extends LogSink
 	private boolean isFirst = true;
 	private int maxLines;
 
-	private JTextPane textPane;
+	private TextPaneExtension textPane;
 	private DefaultStyledDocument document;
 
 	public LogSinkTextPane(int maxLines)
@@ -45,7 +49,7 @@ public class LogSinkTextPane extends LogSink
 		this.maxLines = maxLines;
 
 		document = new DefaultStyledDocument();
-		textPane = new JTextPane(document);
+		textPane = new TextPaneExtension(document);
 		textPane.setEditable(false);
 		textPane.setFont(new Font(Font.MONOSPACED, Font.PLAIN, textPane.getFont().getSize()));
 
@@ -64,7 +68,7 @@ public class LogSinkTextPane extends LogSink
 		StyleConstants.setForeground(STYLE_TRACE, Color.decode("#aaaaaa"));
 	}
 
-	public JTextPane getTextPane()
+	public TextPaneExtension getTextPane()
 	{
 		return textPane;
 	}
@@ -200,6 +204,39 @@ public class LogSinkTextPane extends LogSink
 		} catch (BadLocationException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static class TextPaneExtension extends JTextPane
+	{
+
+		public boolean noLineWrap = true;
+
+		public TextPaneExtension(StyledDocument doc)
+		{
+			super(doc);
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportWidth()
+		{
+			if (noLineWrap) {
+				Object parent = getParent();
+				if (parent instanceof JViewport) {
+					JViewport port = (JViewport) parent;
+					int width = port.getWidth(); // 表示できる範囲(上限)
+
+					TextUI ui = getUI();
+					Dimension size = ui.getPreferredSize(this); // 実際の文字列サイズ
+					if (size.width < width) {
+						return true;
+					}
+				}
+				return false;
+			} else {
+				return super.getScrollableTracksViewportWidth();
+			}
+		}
+
 	}
 
 }
