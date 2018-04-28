@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
 public class SampleLoggerTextPane
@@ -22,9 +21,8 @@ public class SampleLoggerTextPane
 		frame.setLayout(new BorderLayout());
 		LogSinkTextPane logSinkTextPane = new LogSinkTextPane(50);
 		logSink.addLogSink(logSinkTextPane);
-		JScrollPane scrollPane = new JScrollPane(logSinkTextPane.getTextPane());
-		scrollPane.setPreferredSize(new Dimension(300, 200));
-		frame.add(scrollPane);
+		logSinkTextPane.scrollPane.setPreferredSize(new Dimension(300, 200));
+		frame.add(logSinkTextPane.component);
 
 		frame.pack();
 		frame.setLocationByPlatform(true);

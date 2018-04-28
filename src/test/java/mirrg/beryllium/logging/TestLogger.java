@@ -12,12 +12,10 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
 import org.junit.Test;
 
-import mirrg.beryllium.logging.LogSink;
 import mirrg.beryllium.logging.io.OutputStreamLogging;
 
 public class TestLogger
@@ -62,15 +60,14 @@ public class TestLogger
 		logger.info("Test", "004");
 		logger.debug("Test", "005");
 		logger.trace("Test", "006");
-		JScrollPane scrollPane = new JScrollPane(logSink.getTextPane());
-		scrollPane.setPreferredSize(new Dimension(300, 200));
-		frame.add(scrollPane);
+		logSink.scrollPane.setPreferredSize(new Dimension(300, 200));
+		frame.add(logSink.component);
 		Thread.sleep(1000);
 		frame.pack();
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.setLocationByPlatform(true);
 		frame.setVisible(true);
-		if (!logSink.getTextPane().getText().matches(""
+		if (!logSink.textPane.getText().matches(""
 			+ ".{23} \\[FATAL] \\[Test] 001" + System.lineSeparator()
 			+ ".{23} \\[FATAL] \\[Test] 001" + System.lineSeparator()
 			+ ".{23} \\[FATAL] \\[Test] 001" + System.lineSeparator()
