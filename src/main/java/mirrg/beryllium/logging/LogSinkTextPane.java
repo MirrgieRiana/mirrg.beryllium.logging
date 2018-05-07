@@ -3,6 +3,7 @@ package mirrg.beryllium.logging;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.BoxView;
 import javax.swing.text.ComponentView;
+import javax.swing.text.DefaultCaret;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.EditorKit;
 import javax.swing.text.Element;
@@ -58,6 +60,15 @@ public class LogSinkTextPane extends LogSink
 			// TextPaneを無改行にする副作用で幅が余ってると色が変になる対策に強引に背景色を揃える
 			scrollPane.getViewport().setBackground(textPane.getBackground());
 			textPane.setOpaque(false);
+
+			// 自動スクロールを禁止
+			textPane.setCaret(new DefaultCaret() {
+				@Override
+				protected void adjustVisibility(Rectangle nloc)
+				{
+
+				}
+			});
 
 			component.add(scrollPane);
 		}
