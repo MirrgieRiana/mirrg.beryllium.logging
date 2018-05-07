@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.SizeRequirements;
@@ -61,7 +62,7 @@ public class LogSinkTextPane extends LogSink
 			scrollPane.getViewport().setBackground(textPane.getBackground());
 			textPane.setOpaque(false);
 
-			// 自動スクロールを禁止
+			// 異常な自動スクロールを禁止
 			textPane.setCaret(new DefaultCaret() {
 				@Override
 				protected void adjustVisibility(Rectangle nloc)
@@ -132,6 +133,11 @@ public class LogSinkTextPane extends LogSink
 		private void printlnDirectlyImpl(String line, AttributeSet attributeSet)
 		{
 			try {
+
+				JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+				int bottom = scrollBar.getValue() + scrollBar.getVisibleAmount() - scrollBar.getMaximum();
+
+				// 行追加
 				lineLengths.addLast(line.length());
 				if (isFirst) {
 					isFirst = false;
@@ -140,10 +146,16 @@ public class LogSinkTextPane extends LogSink
 					document.insertString(document.getLength(), "\n" + line, attributeSet);
 				}
 
+				// 行あふれを消す
 				while (lineLengths.size() > maxLines) {
 					int length = lineLengths.removeFirst();
 					document.remove(0, length + 1);
 				}
+
+				SwingUtilities.invokeLater(() -> {
+					scrollBar.setValue(bottom - scrollBar.getVisibleAmount() + scrollBar.getMaximum());
+				});
+
 			} catch (BadLocationException e) {
 				throw new RuntimeException(e);
 			}
