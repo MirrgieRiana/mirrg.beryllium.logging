@@ -16,18 +16,19 @@ import javax.swing.WindowConstants;
 
 import org.junit.Test;
 
+import mirrg.beryllium.logging.core.LogSinkTextPane;
 import mirrg.beryllium.logging.io.OutputStreamLogging;
 
 public class TestLogger
 {
 
 	@Test
-	public void test_LoggerPrintWriter() throws Exception
+	public void test_fromPrintWriter() throws Exception
 	{
 		StringWriter out = new StringWriter();
 		PrintWriter out2 = new PrintWriter(out);
-		LogSinkPrintWriter logSink = new LogSinkPrintWriter(out2);
-		TaggedLogger logger = new TaggedLogger("Test", logSink);
+		ILogSink logSink = ILogSink.fromPrintWriter(out2);
+		ILogger logger = logSink.logger("Test");
 		logger.fatal("001");
 		logger.error("002");
 		logger.warn("003");
@@ -44,22 +45,21 @@ public class TestLogger
 	}
 
 	@Test
-	public void test_LoggerTextPane() throws Exception
+	public void test_LogSinkTextPane() throws Exception
 	{
 		JFrame frame = new JFrame();
 		frame.setLayout(new CardLayout());
 		LogSinkTextPane logSink = new LogSinkTextPane(8);
-		Logger logger = new Logger(logSink);
-		logger.fatal("Test", "001");
-		logger.fatal("Test", "001");
-		logger.fatal("Test", "001");
-		logger.fatal("Test", "001");
-		logger.fatal("Test", "001");
-		logger.error("Test", "002");
-		logger.warn("Test", "003");
-		logger.info("Test", "004");
-		logger.debug("Test", "005");
-		logger.trace("Test", "006");
+		logSink.fatal("Test", "001");
+		logSink.fatal("Test", "001");
+		logSink.fatal("Test", "001");
+		logSink.fatal("Test", "001");
+		logSink.fatal("Test", "001");
+		logSink.error("Test", "002");
+		logSink.warn("Test", "003");
+		logSink.info("Test", "004");
+		logSink.debug("Test", "005");
+		logSink.trace("Test", "006");
 		logSink.scrollPane.setPreferredSize(new Dimension(300, 200));
 		frame.add(logSink.component);
 		Thread.sleep(1000);
@@ -92,13 +92,19 @@ public class TestLogger
 		test0(strings, "Unicode");
 
 		{
-			try (PrintStream out2 = new PrintStream(new OutputStreamLogging("Test", new LogSink() {
+			try (PrintStream out2 = new PrintStream(new OutputStreamLogging(new ILogSink() {
 				@Override
 				public void println(String tag, String string, Optional<EnumLogLevel> oLogLevel)
 				{
 					strings.add("[" + tag + "] " + string);
 				}
-			}, "Unicode"), true, "Unicode")) {
+
+				@Override
+				public void println(String tag, Throwable e, Optional<EnumLogLevel> oLogLevel)
+				{
+
+				}
+			}.logger("Test"), "Unicode"), true, "Unicode")) {
 
 				out2.println("abc");
 				assertEquals(1, strings.size());
@@ -126,13 +132,19 @@ public class TestLogger
 
 	private void test0(ArrayList<String> strings, String charset) throws UnsupportedEncodingException
 	{
-		try (PrintStream out2 = new PrintStream(new OutputStreamLogging("Test", new LogSink() {
+		try (PrintStream out2 = new PrintStream(new OutputStreamLogging(new ILogSink() {
 			@Override
 			public void println(String tag, String string, Optional<EnumLogLevel> oLogLevel)
 			{
 				strings.add("[" + tag + "] " + string);
 			}
-		}, charset), true, charset)) {
+
+			@Override
+			public void println(String tag, Throwable e, Optional<EnumLogLevel> oLogLevel)
+			{
+
+			}
+		}.logger("Test"), charset), true, charset)) {
 
 			out2.print("あいうえお\nかきく\rけ\r\nこ");
 			out2.flush();

@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import mirrg.beryllium.logging.core.LogSinkTextPane;
+
 public class SampleLoggerTextPane
 {
 
@@ -13,20 +15,18 @@ public class SampleLoggerTextPane
 	{
 		JFrame frame = new JFrame();
 
-		LogSinkRelay logSink = new LogSinkRelay();
-		logSink.addLogSink(new LogSinkPrintStream(System.out));
-
-		TaggedLogger logger = new TaggedLogger("Test", logSink);
+		ILogDistributor logDistributor = ILogDistributor.of(ILogSink.fromPrintStream(System.out));
+		ILogger logger = logDistributor.logger("Test");
 
 		frame.setLayout(new BorderLayout());
 		LogSinkTextPane logSinkTextPane = new LogSinkTextPane(50);
-		logSink.addLogSink(logSinkTextPane);
+		logDistributor.registerLogSink(logSinkTextPane);
 		logSinkTextPane.scrollPane.setPreferredSize(new Dimension(300, 200));
 		frame.add(logSinkTextPane.component);
 
 		frame.pack();
 		frame.setLocationByPlatform(true);
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
 		for (int i = 0; i < 100; i++) {

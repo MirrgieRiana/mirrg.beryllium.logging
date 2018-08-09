@@ -1,6 +1,8 @@
-package mirrg.beryllium.logging;
+package mirrg.beryllium.logging.core;
 
 import java.util.Optional;
+
+import mirrg.beryllium.logging.EnumLogLevel;
 
 public interface ILogFormatter
 {

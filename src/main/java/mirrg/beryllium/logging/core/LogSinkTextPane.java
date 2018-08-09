@@ -1,4 +1,4 @@
-package mirrg.beryllium.logging;
+package mirrg.beryllium.logging.core;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -35,15 +35,17 @@ import javax.swing.text.StyledEditorKit;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 
+import mirrg.beryllium.logging.EnumLogLevel;
+
 /**
  * Swingコンポーネントとして出力するロガーです。
  * 表示可能な最大行数を決めることができます。
  * 大量のログが出力される可能性がある場合は、別途ファイル出力などと併用してください。
+ * このクラスへの出力処理は非常に重く、
+ * 大量のログを出力させるとプログラムの動作に悪影響を及ぼす可能性があります。
  */
-public class LogSinkTextPane extends LogSink
+public class LogSinkTextPane extends LogSinkTextBase
 {
-
-	public ILogFormatter formatter = LogFormatterDefault.INSTANCE;
 
 	public final JPanel component;
 	public final MTextPane textPane;

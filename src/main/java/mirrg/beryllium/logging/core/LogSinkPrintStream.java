@@ -1,13 +1,14 @@
-package mirrg.beryllium.logging;
+package mirrg.beryllium.logging.core;
 
 import java.io.PrintStream;
 import java.util.Optional;
 
-public class LogSinkPrintStream extends LogSink
+import mirrg.beryllium.logging.EnumLogLevel;
+
+public class LogSinkPrintStream extends LogSinkTextBase
 {
 
 	private PrintStream out;
-	public ILogFormatter formatter = LogFormatterDefault.INSTANCE;
 
 	public LogSinkPrintStream(PrintStream out)
 	{

@@ -1,8 +1,10 @@
-package mirrg.beryllium.logging;
+package mirrg.beryllium.logging.core;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+
+import mirrg.beryllium.logging.EnumLogLevel;
 
 public class LogFormatterDefault implements ILogFormatter
 {
