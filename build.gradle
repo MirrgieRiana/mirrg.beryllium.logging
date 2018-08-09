@@ -4,7 +4,7 @@ apply plugin: 'maven'
 
 project.group = 'mirrg'
 project.archivesBaseName = 'mirrg.beryllium.logging'
-version = '2.3.0'
+version = '3.0.0'
 
 sourceCompatibility = 10
 targetCompatibility = 10
