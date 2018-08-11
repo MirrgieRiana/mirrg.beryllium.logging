@@ -1,6 +1,6 @@
 package mirrg.beryllium.logging;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -14,7 +14,7 @@ import java.util.Optional;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import mirrg.beryllium.logging.core.LogSinkTextPane;
 import mirrg.beryllium.logging.io.OutputStreamLogging;
