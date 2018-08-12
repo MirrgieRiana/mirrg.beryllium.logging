@@ -5,27 +5,27 @@ import java.nio.charset.Charset;
 import java.util.Optional;
 
 import mirrg.beryllium.logging.EnumLogLevel;
-import mirrg.beryllium.logging.ILogger;
+import mirrg.beryllium.logging.Logger;
 
 public class OutputStreamLogging extends OutputStreamDecodeBase
 {
 
-	private ILogger logger;
+	private Logger logger;
 	private Optional<EnumLogLevel> oLogLevel = Optional.empty();
 
-	public OutputStreamLogging(ILogger logger)
+	public OutputStreamLogging(Logger logger)
 	{
 		super();
 		this.logger = logger;
 	}
 
-	public OutputStreamLogging(ILogger logger, String charset)
+	public OutputStreamLogging(Logger logger, String charset)
 	{
 		super(charset);
 		this.logger = logger;
 	}
 
-	public OutputStreamLogging(ILogger logger, Charset charset)
+	public OutputStreamLogging(Logger logger, Charset charset)
 	{
 		super(charset);
 		this.logger = logger;

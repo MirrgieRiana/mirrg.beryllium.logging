@@ -1,4 +1,4 @@
-package mirrg.beryllium.logging.core;
+package mirrg.beryllium.logging.loggers.text;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -6,16 +6,14 @@ import java.util.Optional;
 
 import mirrg.beryllium.logging.EnumLogLevel;
 
-public class LogFormatterDefault implements ILogFormatter
+public class LogFormatterSimple implements ILogFormatter
 {
-
-	public static final LogFormatterDefault INSTANCE = new LogFormatterDefault("uuuu/MM/dd HH:mm:ss.SSS");
 
 	private DateTimeFormatter formatter;
 
-	public LogFormatterDefault(String pattern)
+	public LogFormatterSimple(DateTimeFormatter formatter)
 	{
-		formatter = DateTimeFormatter.ofPattern(pattern);
+		this.formatter = formatter;
 	}
 
 	@Override

@@ -1,9 +1,7 @@
-package mirrg.beryllium.logging;
+package mirrg.beryllium.logging.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.awt.CardLayout;
-import java.awt.Dimension;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -11,13 +9,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
-
 import org.junit.jupiter.api.Test;
 
-import mirrg.beryllium.logging.core.LogSinkTextPane;
+import mirrg.beryllium.logging.EnumLogLevel;
+import mirrg.beryllium.logging.LogSink;
+import mirrg.beryllium.logging.Logger;
 import mirrg.beryllium.logging.io.OutputStreamLogging;
+import mirrg.beryllium.logging.loggers.text.LogSinkPrintWriter;
 
 public class TestLogger
 {
@@ -25,16 +23,19 @@ public class TestLogger
 	@Test
 	public void test_fromPrintWriter() throws Exception
 	{
+
+		// 出力先
 		StringWriter out = new StringWriter();
-		PrintWriter out2 = new PrintWriter(out);
-		ILogSink logSink = ILogSink.fromPrintWriter(out2);
-		ILogger logger = logSink.logger("Test");
+
+		// ログ出力
+		Logger logger = new LogSinkPrintWriter(new PrintWriter(out)).logger("Test");
 		logger.fatal("001");
 		logger.error("002");
 		logger.warn("003");
 		logger.info("004");
 		logger.debug("005");
 		logger.trace("006");
+
 		assertTrue(out.toString().matches(""
 			+ ".{23} \\[FATAL] \\[Test] 001" + System.lineSeparator()
 			+ ".{23} \\[ERROR] \\[Test] 002" + System.lineSeparator()
@@ -42,44 +43,7 @@ public class TestLogger
 			+ ".{23} \\[INFO]  \\[Test] 004" + System.lineSeparator()
 			+ ".{23} \\[DEBUG] \\[Test] 005" + System.lineSeparator()
 			+ ".{23} \\[TRACE] \\[Test] 006" + System.lineSeparator()));
-	}
 
-	@Test
-	public void test_LogSinkTextPane() throws Exception
-	{
-		JFrame frame = new JFrame();
-		frame.setLayout(new CardLayout());
-		LogSinkTextPane logSink = new LogSinkTextPane(8);
-		logSink.fatal("Test", "001");
-		logSink.fatal("Test", "001");
-		logSink.fatal("Test", "001");
-		logSink.fatal("Test", "001");
-		logSink.fatal("Test", "001");
-		logSink.error("Test", "002");
-		logSink.warn("Test", "003");
-		logSink.info("Test", "004");
-		logSink.debug("Test", "005");
-		logSink.trace("Test", "006");
-		logSink.scrollPane.setPreferredSize(new Dimension(300, 200));
-		frame.add(logSink.component);
-		Thread.sleep(1000);
-		frame.pack();
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.setLocationByPlatform(true);
-		frame.setVisible(true);
-		if (!logSink.textPane.getText().matches(""
-			+ ".{23} \\[FATAL] \\[Test] 001" + System.lineSeparator()
-			+ ".{23} \\[FATAL] \\[Test] 001" + System.lineSeparator()
-			+ ".{23} \\[FATAL] \\[Test] 001" + System.lineSeparator()
-			+ ".{23} \\[ERROR] \\[Test] 002" + System.lineSeparator()
-			+ ".{23} \\[WARN]  \\[Test] 003" + System.lineSeparator()
-			+ ".{23} \\[INFO]  \\[Test] 004" + System.lineSeparator()
-			+ ".{23} \\[DEBUG] \\[Test] 005" + System.lineSeparator()
-			+ ".{23} \\[TRACE] \\[Test] 006")) {
-			fail();
-		}
-		Thread.sleep(1000);
-		frame.dispose();
 	}
 
 	@Test
@@ -92,7 +56,7 @@ public class TestLogger
 		test0(strings, "Unicode");
 
 		{
-			try (PrintStream out2 = new PrintStream(new OutputStreamLogging(new ILogSink() {
+			try (PrintStream out2 = new PrintStream(new OutputStreamLogging(new LogSink() {
 				@Override
 				public void println(String tag, String string, Optional<EnumLogLevel> oLogLevel)
 				{
@@ -132,7 +96,7 @@ public class TestLogger
 
 	private void test0(ArrayList<String> strings, String charset) throws UnsupportedEncodingException
 	{
-		try (PrintStream out2 = new PrintStream(new OutputStreamLogging(new ILogSink() {
+		try (PrintStream out2 = new PrintStream(new OutputStreamLogging(new LogSink() {
 			@Override
 			public void println(String tag, String string, Optional<EnumLogLevel> oLogLevel)
 			{

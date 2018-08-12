@@ -1,4 +1,4 @@
-package mirrg.beryllium.logging.core;
+package mirrg.beryllium.logging.loggers.desktop;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -36,6 +36,7 @@ import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 
 import mirrg.beryllium.logging.EnumLogLevel;
+import mirrg.beryllium.logging.loggers.text.LogSinkTextBase;
 
 /**
  * Swingコンポーネントとして出力するロガーです。
@@ -44,6 +45,7 @@ import mirrg.beryllium.logging.EnumLogLevel;
  * このクラスへの出力処理は非常に重く、
  * 大量のログを出力させるとプログラムの動作に悪影響を及ぼす可能性があります。
  */
+@Deprecated // TODO 別モジュールに移動
 public class LogSinkTextPane extends LogSinkTextBase
 {
 

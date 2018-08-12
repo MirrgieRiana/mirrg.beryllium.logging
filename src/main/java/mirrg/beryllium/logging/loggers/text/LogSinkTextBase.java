@@ -1,19 +1,21 @@
-package mirrg.beryllium.logging.core;
+package mirrg.beryllium.logging.loggers.text;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Optional;
 
 import mirrg.beryllium.logging.EnumLogLevel;
-import mirrg.beryllium.logging.ILogSink;
+import mirrg.beryllium.logging.LogSink;
 
-public abstract class LogSinkTextBase implements ILogSink
+public abstract class LogSinkTextBase extends LogSink
 {
 
-	public ILogFormatter formatter = LogFormatterDefault.INSTANCE;
+	public ILogFormatter formatter = ILogFormatter.DEFAULT;
 
+	@Override
 	public abstract void println(String tag, String string, Optional<EnumLogLevel> oLogLevel);
 
+	@Override
 	public void println(String tag, Throwable e, Optional<EnumLogLevel> oLogLevel)
 	{
 		StringWriter out = new StringWriter();

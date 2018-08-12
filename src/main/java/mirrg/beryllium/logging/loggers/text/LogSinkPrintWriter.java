@@ -1,16 +1,16 @@
-package mirrg.beryllium.logging.core;
+package mirrg.beryllium.logging.loggers.text;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Optional;
 
 import mirrg.beryllium.logging.EnumLogLevel;
 
-public class LogSinkPrintStream extends LogSinkTextBase
+public class LogSinkPrintWriter extends LogSinkTextBase
 {
 
-	private PrintStream out;
+	private PrintWriter out;
 
-	public LogSinkPrintStream(PrintStream out)
+	public LogSinkPrintWriter(PrintWriter out)
 	{
 		this.out = out;
 	}
